@@ -16,8 +16,15 @@ app.use('/js/jquery.min.js', static(__dirname + '/bower_components/jquery/dist/j
 app.use('/js/jquery.min.map', static(__dirname + '/bower_components/jquery/dist/jquery.min.map'));
 app.use(static(path.join(__dirname, '/public')));
 
-var players = [];
-var player = {name:"", model:500, color:"white"};
+var players = [
+        {name:"", points:0, position:{x:0.0, y:0.0} },
+        {name:"", points:0, position:{x:0.0, y:0.0} },
+        {name:"", points:0, position:{x:0.0, y:0.0} },
+        {name:"", points:0, position:{x:0.0, y:0.0} },
+    ];
+
+var roomNumber = 0;
+var actualPlayerNumber = 0;
 
 io.sockets.on("connection", function (socket) {
 
@@ -29,16 +36,30 @@ io.sockets.on("connection", function (socket) {
     });
     
     socket.on('login', function (data) {
-        var i;
+        /*var i;
         for (i = 0; i < names.length; i++) {
             if (names[i] === data) {
                 socket.emit("err", "nick jest zajęty");
                 return;
             }
-        }
-        
-        socket.emit("loginOK", data);
+        }*/        
+    if(actualPlayerNumber < 4){
+        socket.emit("joinRoom", roomNumber);
+        socket.join(roomNumber);
+        actualPlayerNumber++;
+    }
+    else{
+        roomNumber++;
+        actualPlayerNumber = 0
+        socket.emit("joinRoom", roomNumber);
+        socket.join(roomNumber);
+        actualPlayerNumber++;
+    }
+    
+    socket.emit("loginOK", data);
     });
+    
+    
     
    
 });

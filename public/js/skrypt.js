@@ -6,6 +6,7 @@ $(function(){
 
     var state = "disconnected";
     var nick = "";
+    var myRoom = "";
 
     var socket;
     
@@ -24,14 +25,22 @@ $(function(){
     socket.on("error", function (err) {
          console.log("Błąd połączenia z serwerem: '" + JSON.stringify(err) + "'");
     });
-    
+
     socket.on("loginOK", function (data) {
         $("#login").hide();
         $("#game").show();
         
         state = "connected";
         nick = data;
+        console.log('Otrzymano nick: ' + data);
     });
+    socket.on('joinRoom', function (data) {
+        myRoom = data;
+        console.log('Doączono do pokoju: ' + data);
+    });
+
+
+    
 
     $("#send").click(function(){
         if($("#nick").val() !== '') {
