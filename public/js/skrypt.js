@@ -6,7 +6,8 @@ $(function(){
 
     var state = "disconnected";
     var nick = "";
-    var myRoom = "";
+    var myRoom = 0;
+    var myID = 0;
 
     var socket;
     
@@ -35,13 +36,21 @@ $(function(){
         console.log('Otrzymano nick: ' + data);
     });
     socket.on('joinRoom', function (data) {
-        myRoom = data;
-        console.log('Doączono do pokoju: ' + data);
+        myRoom = data[0];
+        myID = data[0];
+        console.log('Doączono do pokoju: ' + data[0] + ' jako: ' + data[1]);
     });
-
-
     
-
+    socket.on('game', function (data) {
+        console.log("Gracz " + data[1] + " w pokoju " + data[0] + " " + data[2]);
+    });
+    
+    
+    $("#game").click(function(){
+        socket.emit('game', [myRoom, myID, "klik"]);
+        console.log('gracz kliknal');
+    });
+    
     $("#send").click(function(){
         if($("#nick").val() !== '') {
         socket.emit('login', $("#nick").val());
