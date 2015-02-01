@@ -61,9 +61,10 @@ $(function(){
         console.log('Doączono do pokoju: ' + data[0] + ' jako: ' + data[1]);
     });
     
-    socket.on('game', function (data) {
-        console.log("Gracz " + data[1] + " w pokoju " + data[0] + " " + data[2]);
+    socket.on('game2', function (data) {
+        console.log("Gracz " + data[0] + data[1]);
     });
+    
     socket.on('play', function (data) {
         console.log("Gra się zaczela");
     });

@@ -46,14 +46,15 @@ io.sockets.on("connection", function (socket) {
         }    */    
     if(actualPlayerNumber < 4){
         socket.join(roomNumber);
+        socket.playerRoom = roomNumber;
+        socket.emit("joinRoom", [roomNumber, actualPlayerNumber]);
         actualPlayerNumber++;
-        socket.emit("joinRoom", [actualPlayerNumber]);
     }
     else{
         roomNumber++;
         actualPlayerNumber = 0
-        
         socket.join(roomNumber);
+        socket.playerRoom = roomNumber;
         actualPlayerNumber++;
         socket.emit("joinRoom", [roomNumber, actualPlayerNumber]);
         socket.broadcast.to(socket.room).emit('play', 0);
@@ -62,9 +63,9 @@ io.sockets.on("connection", function (socket) {
     socket.emit("loginOK", data);
     });
     
-    socket.on('game', function (roomId, playerID, msg) {
-        socket.broadcast.to(socket.room).emit('game', [roomId, playerID, msg]);
-        //io.to(roomId).emit('game', [roomId, playerID, msg]);
+    socket.on('game', function (data) {
+        socket.broadcast.to(socket.playerRoom).emit('game2', data);
+        socket.emit('game2', data);
         console.log('game');
     });
     
