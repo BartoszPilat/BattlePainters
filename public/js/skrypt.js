@@ -61,12 +61,17 @@ $(function(){
         console.log('Doączono do pokoju: ' + data[0] + ' jako: ' + data[1]);
     });
     
-    socket.on('game2', function (data) {
+    socket.on('game', function (data) {
         console.log("Gracz " + data[0] + data[1]);
     });
     
     socket.on('play', function (data) {
+        state = "play";
         console.log("Gra się zaczela");
+    });
+    
+    socket.on('position', function (data) {
+        players[data[0]] = data[1];
     });
     
     //--------------------------------------------------------------//

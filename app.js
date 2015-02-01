@@ -49,24 +49,30 @@ io.sockets.on("connection", function (socket) {
         socket.playerRoom = roomNumber;
         socket.emit("joinRoom", [roomNumber, actualPlayerNumber]);
         actualPlayerNumber++;
+        if(actualPlayerNumber === 4){
+            io.to(socket.playerRoom).emit('play', 1);
+            socket.emit('play', 1);
+            console.log("Room " + socket.playerRoom + " starts.");
+        }
     }
     else{
         roomNumber++;
         actualPlayerNumber = 0
         socket.join(roomNumber);
         socket.playerRoom = roomNumber;
-        actualPlayerNumber++;
         socket.emit("joinRoom", [roomNumber, actualPlayerNumber]);
-        socket.broadcast.to(socket.room).emit('play', 0);
+        actualPlayerNumber++;
     }
     
     socket.emit("loginOK", data);
     });
     
     socket.on('game', function (data) {
-        socket.broadcast.to(socket.playerRoom).emit('game2', data);
-        socket.emit('game2', data);
-        console.log('game');
+        socket.broadcast.to(socket.playerRoom).emit('game', data);
+    });
+
+    socket.on('position', function (data) {
+        socket.broadcast.to(socket.playerRoom).emit('position', data);
     });
     
    

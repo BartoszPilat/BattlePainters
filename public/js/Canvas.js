@@ -9,7 +9,7 @@ function StartGame(){
         color: "#FF0000"
     }  ,
         {
-        x: 400,
+        x: 600,
         y: 100,
         radius: 10,
         //direction = 0-359;
@@ -18,15 +18,15 @@ function StartGame(){
     },
         {
         x: 200,
-        y: 200,
+        y: 300,
         radius: 10,
         //direction = 0-359;
         direction: 135,
         color: "#0000FF"
     },
         {
-        x: 400,
-        y: 200,
+        x: 600,
+        y: 300,
         radius: 10,
         //direction = 0-359;
         direction: 45,
@@ -48,12 +48,13 @@ window.requestAnimFrame = (function(){
 })();
 
 function Frame(){
+    requestAnimFrame(Frame);
     if(state === "play"){
-        requestAnimFrame(Frame);
         calcNextFrame();
-        drawPlayers();
         getInput();
+        socket.emit('position',[myID, players[myID]]);
     }
+    drawPlayers();
 }
 
 /*function calcNextFrame(){
