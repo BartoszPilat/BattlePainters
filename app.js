@@ -32,37 +32,38 @@ io.sockets.on("connection", function (socket) {
         console.dir(err);
     });
     socket.on('disconnect', function (err) {
+    
         console.dir(err);
     });
     
-    socket.on('login', function (data) {
+    socket.on('SearchRandom', function (data) {
         /*var i;
         for (i = 0; i < names.length; i++) {
             if (names[i] === data) {
                 socket.emit("err", "nick jest zajęty");
                 return;
             }
-        }*/        
+        }    */    
     if(actualPlayerNumber < 4){
-        socket.emit("joinRoom", [roomNumber, actualPlayerNumber]);
         socket.join(roomNumber);
         actualPlayerNumber++;
+        socket.emit("joinRoom", [roomNumber, actualPlayerNumber]);
     }
     else{
         roomNumber++;
         actualPlayerNumber = 0
-        socket.emit("joinRoom", [roomNumber, actualPlayerNumber]);
+        
         socket.join(roomNumber);
         actualPlayerNumber++;
+        socket.emit("joinRoom", [roomNumber, actualPlayerNumber]);
     }
     
     socket.emit("loginOK", data);
     });
     
     socket.on('game', function (roomId, playerID, msg) {
-        //socket.emit.to(roomId).broadcast('game', [roomId, playerID, msg]);
-        //socket.broadcast.to(roomId).emit('game', [roomId, playerID, msg]);
-        io.to(roomId).emit('game', [roomId, playerID, msg]);
+        socket.broadcast.to(socket.).emit('game', [roomId, playerID, msg]);
+        //io.to(roomId).emit('game', [roomId, playerID, msg]);
         console.log('game');
     });
     

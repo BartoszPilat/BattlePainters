@@ -2,21 +2,41 @@
 /* global io: false, $: false */
 "use strict";
 
+/**var player = {
+    nick: "",
+    nr: 0,
+    x: 0,
+    y: 0,
+    radius: 1,
+    //direction = 0-359;
+    direction: 0
+}*/ 
+
+
 $(function(){
 
     var state = "disconnected";
     var nick = "";
     var myRoom = 0;
     var myID = 0;
-
+    
+    //server stuff
     var socket;
     
-    $("#game").hide();
+    //canvas stuff
+    var players = [];
+    
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    
+    //$("#game").hide();
     
     if (!socket || !socket.connected) {
                 socket = io({forceNew: true});
     }
    
+    //--------------------------------------------------------------//
+    //sokety
     socket.on('connect', function () {
         console.log('Nawiązano połączenie przez Socket.io');
     });
@@ -45,7 +65,8 @@ $(function(){
         console.log("Gracz " + data[1] + " w pokoju " + data[0] + " " + data[2]);
     });
     
-    
+    //--------------------------------------------------------------//
+    //reakcjie 
     $("#game").click(function(){
         socket.emit('game', [myRoom, myID, "klik"]);
         console.log('gracz kliknal');
@@ -53,7 +74,7 @@ $(function(){
     
     $("#send").click(function(){
         if($("#nick").val() !== '') {
-        socket.emit('login', $("#nick").val());
+        socket.emit('SearchRandom', $("#nick").val());
         console.log('Próba logowania z nickiem: ' + $("#nick").val());
         $("#nick").val('');
         }
