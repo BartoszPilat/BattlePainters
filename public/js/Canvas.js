@@ -91,7 +91,7 @@ function calcNextFrame(){
     if(players[myID].y < 0) players[myID].y = 0;
         
     if(players[myID].x > 800) players[myID].x = 800;
-    if(players[myID].y > 400) players[myID].y = 800;
+    if(players[myID].y > 400) players[myID].y = 400;
         
     movePlayer(players[myID]);
     
@@ -112,8 +112,8 @@ function calcColWithPlayer(player,j){
 
 function movePlayer(player){ 
     var radians=Math.PI/180;
-    player.x += (player.radius/10) * Math.cos(player.direction * radians);
-    player.y += (player.radius/10) * Math.sin(player.direction * radians);
+    player.x += (player.radius/5) * Math.cos(player.direction * radians);
+    player.y += (player.radius/5) * Math.sin(player.direction * radians);
 }
 
 function drawPlayers(){
@@ -136,7 +136,6 @@ function getInput(){
     if(keys.left) players[myID].direction = players[myID].direction - 2;
     else if(keys.right) players[myID].direction = players[myID].direction + 2;
     players[myID].direction = players[myID].direction % 360;
-    console.log(players[myID].direction);
 }
 
 //reset vars

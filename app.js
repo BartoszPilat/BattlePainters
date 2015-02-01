@@ -49,11 +49,12 @@ io.sockets.on("connection", function (socket) {
         socket.playerRoom = roomNumber;
         socket.emit("joinRoom", [roomNumber, actualPlayerNumber]);
         actualPlayerNumber++;
+        socket.emit("loginOK", data);
         if(actualPlayerNumber === 4){
             io.to(socket.playerRoom).emit('play', 1);
-            socket.emit('play', 1);
             console.log("Room " + socket.playerRoom + " starts.");
         }
+        
     }
     else{
         roomNumber++;
@@ -62,9 +63,8 @@ io.sockets.on("connection", function (socket) {
         socket.playerRoom = roomNumber;
         socket.emit("joinRoom", [roomNumber, actualPlayerNumber]);
         actualPlayerNumber++;
-    }
-    
-    socket.emit("loginOK", data);
+        socket.emit("loginOK", data);
+    }    
     });
     
     socket.on('game', function (data) {
