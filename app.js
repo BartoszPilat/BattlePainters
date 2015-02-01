@@ -47,7 +47,7 @@ io.sockets.on("connection", function (socket) {
     if(actualPlayerNumber < 4){
         socket.join(roomNumber);
         actualPlayerNumber++;
-        socket.emit("joinRoom", [roomNumber, actualPlayerNumber]);
+        socket.emit("joinRoom", [actualPlayerNumber]);
     }
     else{
         roomNumber++;
@@ -56,13 +56,14 @@ io.sockets.on("connection", function (socket) {
         socket.join(roomNumber);
         actualPlayerNumber++;
         socket.emit("joinRoom", [roomNumber, actualPlayerNumber]);
+        socket.broadcast.to(socket.room).emit('play', 0);
     }
     
     socket.emit("loginOK", data);
     });
     
     socket.on('game', function (roomId, playerID, msg) {
-        socket.broadcast.to(socket.).emit('game', [roomId, playerID, msg]);
+        socket.broadcast.to(socket.room).emit('game', [roomId, playerID, msg]);
         //io.to(roomId).emit('game', [roomId, playerID, msg]);
         console.log('game');
     });

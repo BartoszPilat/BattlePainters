@@ -5,7 +5,7 @@ function StartGame(){
         y: 100,
         radius: 10,
         //direction = 0-359;
-        direction: 0,
+        direction: 225,
         color: "#FF0000"
     }  ,
         {
@@ -13,7 +13,7 @@ function StartGame(){
         y: 100,
         radius: 10,
         //direction = 0-359;
-        direction: 0,
+        direction: 315,
         color: "#00FF00"
     },
         {
@@ -21,8 +21,16 @@ function StartGame(){
         y: 200,
         radius: 10,
         //direction = 0-359;
-        direction: 0,
+        direction: 135,
         color: "#0000FF"
+    },
+        {
+        x: 400,
+        y: 200,
+        radius: 10,
+        //direction = 0-359;
+        direction: 45,
+        color: "#FF00FF"
     }
   ];
 }
@@ -40,12 +48,15 @@ window.requestAnimFrame = (function(){
 })();
 
 function Frame(){
-  requestAnimFrame(Frame);
-  calcNextFrame();
-  drawPlayers();
+    if(state === "play"){
+        requestAnimFrame(Frame);
+        calcNextFrame();
+        drawPlayers();
+        getInput();
+    }
 }
 
-function calcNextFrame(){
+/*function calcNextFrame(){
     var i,j;
     
     for(i = 0; i < players.length; i++)
@@ -61,10 +72,28 @@ function calcNextFrame(){
         if(players[i].y < 0) players[i].y = 0;
         
         if(players[i].x > 800) players[i].x = 800;
-        if(players[i].y > 800) players[i].y = 800;
+        if(players[i].y > 400) players[i].y = 800;
         
         movePlayer(players[i]);
     }
+}*/
+function calcNextFrame(){
+    var i,j;
+    //colisions with other players
+    for(j = 0; j < players.length; j++)
+    {
+        if(i === j) continue;
+        calcColWithPlayer(players[myID],j);
+    }
+    //colision with boundaries
+    if(players[myID].x < 0) players[myID].x = 0;
+    if(players[myID].y < 0) players[myID].y = 0;
+        
+    if(players[myID].x > 800) players[myID].x = 800;
+    if(players[myID].y > 400) players[myID].y = 800;
+        
+    movePlayer(players[myID]);
+    
 }
 
 function calcColWithPlayer(player,j){
@@ -100,6 +129,13 @@ function drawCircle(x, y, radius, color){
     ctx.arc(x, y, radius, 0, 2 * Math.PI);
     ctx.fillStyle = color;
     ctx.fill();
+}
+
+function getInput(){
+    if(keys.left) players[myID].direction = players[myID].direction - 2;
+    else if(keys.right) players[myID].direction = players[myID].direction + 2;
+    players[myID].direction = players[myID].direction % 360;
+    console.log(players[myID].direction);
 }
 
 //reset vars

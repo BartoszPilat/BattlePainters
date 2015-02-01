@@ -12,24 +12,24 @@
     direction: 0
 }*/ 
 
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
-
-$(function(){
-
     var state = "disconnected";
     var nick = "";
-    var myRoom = 0;
-    var myID = 0;
+    var myID = 1;
     
     //server stuff
     var socket;
     
     //canvas stuff
     var players = [];
-    
-    
-    //$("#game").hide();
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
+    //INPUT
+    var keys = new Keys();
+
+$(function(){
+
+    $("#game").hide();
     
     if (!socket || !socket.connected) {
                 socket = io({forceNew: true});
@@ -55,21 +55,31 @@ $(function(){
         nick = data;
         console.log('Otrzymano nick: ' + data);
     });
-    socket.on('joinRoom', function (data) {
-        myRoom = data[0];
-        myID = data[0];
+    
+        socket.on('joinRoom', function (data) {
+        myID = data[1];
         console.log('Doączono do pokoju: ' + data[0] + ' jako: ' + data[1]);
     });
     
     socket.on('game', function (data) {
         console.log("Gracz " + data[1] + " w pokoju " + data[0] + " " + data[2]);
     });
+    socket.on('play', function (data) {
+        console.log("Gra się zaczela");
+    });
     
     //--------------------------------------------------------------//
     //reakcjie 
     $("#game").click(function(){
-        socket.emit('game', [myRoom, myID, "klik"]);
+        socket.emit('game', [myID, "klik"]);
         console.log('gracz kliknal');
+    });
+    
+    $(window).keydown(function(e){
+        keys.onKeyDown(e);
+    });
+    $(window).keyup(function(e){
+        keys.onKeyUp(e);
     });
     
     $("#send").click(function(){
