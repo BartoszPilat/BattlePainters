@@ -12,6 +12,8 @@
     direction: 0
 }*/ 
 
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
 
 $(function(){
 
@@ -26,8 +28,6 @@ $(function(){
     //canvas stuff
     var players = [];
     
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
     
     //$("#game").hide();
     
