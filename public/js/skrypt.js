@@ -21,8 +21,19 @@
     
     //canvas stuff
     var players = [];
+    var playerPoints = 0;
+    var leaderboard = [];
+
+    var timeLeft = 0;
+    var start;
+    var elapsed = 0;
+
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
+
+    var width  = 800;
+    var height = 400;
+    var imageData;
 
     //INPUT
     var keys = new Keys();
@@ -41,6 +52,7 @@ $(function(){
         console.log('Nawiązano połączenie przez Socket.io');
     });
     socket.on('disconnect', function () {
+        
          console.log('Połączenie przez Socket.io zostało zakończone');
     });
     socket.on("error", function (err) {
@@ -67,11 +79,18 @@ $(function(){
     
     socket.on('play', function (data) {
         state = "play";
+        start = Date.now();
+        timeLeft = data;
         console.log("Gra się zaczela");
     });
     
     socket.on('position', function (data) {
         players[data[0]] = data[1];
+    });
+    socket.on('points', function (data) {
+        var tmp = {p: data[1], n: data[2]}
+        console.log("Gracz " + tmp.n + " zdobyl " + tmp.p + " punktow.");
+        leaderboard.push(tmp);
     });
     
     //--------------------------------------------------------------//

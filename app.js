@@ -51,7 +51,7 @@ io.sockets.on("connection", function (socket) {
         actualPlayerNumber++;
         socket.emit("loginOK", data);
         if(actualPlayerNumber === 4){
-            io.to(socket.playerRoom).emit('play', 1);
+            io.to(socket.playerRoom).emit('play', 30000);
             console.log("Room " + socket.playerRoom + " starts.");
         }
         
@@ -72,7 +72,11 @@ io.sockets.on("connection", function (socket) {
     });
 
     socket.on('position', function (data) {
-        socket.broadcast.to(socket.playerRoom).emit('position', data);
+ socket.broadcast.to(socket.playerRoom).emit('position', data);
+    });
+    socket.on('points', function (data) {
+ socket.broadcast.to(socket.playerRoom).emit('points', data);
+        socket.emit('points', data);
     });
     
    

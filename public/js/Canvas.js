@@ -49,12 +49,55 @@ window.requestAnimFrame = (function(){
 
 function Frame(){
     requestAnimFrame(Frame);
-    if(state === "play"){
+    if(state === "play" && elapsed < timeLeft){
         calcNextFrame();
         getInput();
         socket.emit('position',[myID, players[myID]]);
+
+        elapsed = Date.now() - start;
     }
-    drawPlayers();
+    if(state === "play" && elapsed > timeLeft){
+        state = "afterGame";
+    }
+    if(state === "afterGame"){
+        var w,h;
+        var index;
+        var playerColor = hexToRgb(players[myID].color);
+        imageData = ctx.getImageData(0,0,width,height);
+       
+        for(h = 0 ; h < height; h++){
+            for(w = 0 ; w < width; w++){
+                index = 4 * (w + h * width);
+                var red   = imageData.data[index    ];  // red   color
+                var green = imageData.data[index + 1];  // green color
+                var blue  = imageData.data[index + 2];  // blue  color
+                var alpha = imageData.data[index + 3];
+                
+                if(playerColor.r === red && playerColor.b === blue && playerColor.g === green){
+                    playerPoints++;
+                }
+            }
+        }
+        socket.emit('points', [myID, playerPoints, nick]);
+        state = "leaderBoard";
+    }
+    if(state === "leaderBoard" && leaderboard.length === 4){
+        var i = 0;
+        var x = canvas.width/2, y = canvas.height/2;
+        leaderboard.sort(function(a, b){return b.p-a.p});
+        
+        ctx.font = "60px Comic Sans MS";
+        ctx.fillStyle = "black";
+        ctx.textAlign = "center";
+        ctx.fillText("Game End", x, y);
+        ctx.font = "30px Arial";
+        for(i = 0; i < leaderboard.length; i++){
+            ctx.fillText(leaderboard[i].n + ": " + leaderboard[i].p,x,y+30*(i+1));
+        }
+    }
+    else{
+        drawPlayers();
+    }
 }
 
 /*function calcNextFrame(){
@@ -137,6 +180,25 @@ function getInput(){
     else if(keys.right) players[myID].direction = players[myID].direction + 2;
     players[myID].direction = players[myID].direction % 360;
 }
+
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
 
 //reset vars
 StartGame();
